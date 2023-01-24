@@ -5,7 +5,7 @@ using ShoppingCartService.DataAccess.Entities;
 using ShoppingCartService.Mapping;
 using ShoppingCartService.Models;
 
-namespace EstoreTests
+namespace ShoppingCartTests
 {
     public class CheckOutEngineTests
     {

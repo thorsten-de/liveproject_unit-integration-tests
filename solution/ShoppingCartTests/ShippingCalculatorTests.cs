@@ -3,7 +3,7 @@ using ShoppingCartService.BusinessLogic;
 using ShoppingCartService.DataAccess.Entities;
 using ShoppingCartService.Models;
 
-namespace EstoreTests
+namespace ShoppingCartTests
 {
     public class ShippingCalculatorTests
     {
