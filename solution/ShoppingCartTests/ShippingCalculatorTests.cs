@@ -14,18 +14,15 @@ namespace ShoppingCartTests
             Street = "At home"
         };
 
-        private static List<Item> GenerateCartItems() =>
-            new List<Item> {
-            new Item { Quantity = 1 },
-            new Item { Quantity = 2 },
-            new Item { Quantity = 3 }
-            };
-
         private static Cart DefaultCart() =>
             new Cart
             {
                 ShippingAddress = InSameCity,
-                Items = GenerateCartItems(),
+                Items = new List<Item> {
+                    new Item { Quantity = 1 },
+                    new Item { Quantity = 2 },
+                    new Item { Quantity = 3 }
+                },
             };
 
         [Fact]
@@ -38,6 +35,7 @@ namespace ShoppingCartTests
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
+
             Assert.Equal(0.00, costs);
         }
 
@@ -52,10 +50,9 @@ namespace ShoppingCartTests
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
+
             Assert.Equal(2.00, costs);
         }
-
-       
 
         [Theory]
         [InlineData(ShippingMethod.Standard, 6.0)]
@@ -65,7 +62,6 @@ namespace ShoppingCartTests
         public void It_applies_shipping_method_for_standard_customers(ShippingMethod method, double expectedCosts) {            
             var cart = DefaultCart();
             cart.ShippingMethod = method;
-
             var calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -83,7 +79,6 @@ namespace ShoppingCartTests
             var cart = DefaultCart();
             cart.CustomerType = CustomerType.Premium;
             cart.ShippingMethod = method;
-
             var calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -94,44 +89,35 @@ namespace ShoppingCartTests
         [Fact]
         public void Ship_to_different_city_in_same_country()
         {
-            var cart = new Cart
+            var cart = DefaultCart();
+            cart.ShippingAddress = new Address
             {
-                ShippingAddress = new Address
-                {
-                    City = "New York",
-                    Country = "USA",
-                    Street = "Wall Street 11"
-                },
-                Items = GenerateCartItems(),
-                ShippingMethod = ShippingMethod.Standard,
+                City = "New York",
+                Country = "USA",
+                Street = "Wall Street 11"
             };
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
+
             Assert.Equal(12.0, costs);
         }
 
         [Fact]
         public void Ship_to_another_country()
         {
-            var cart = new Cart
+            var cart = DefaultCart();
+            cart.ShippingAddress = new Address
             {
-                ShippingAddress = new Address
-                {
-                    City = "London",
-                    Country = "GB",
-                    Street = "Downing Street 10"
-                },
-                Items = GenerateCartItems(),
-                ShippingMethod = ShippingMethod.Standard,
+                City = "London",
+                Country = "GB",
+                Street = "Downing Street 10"
             };
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
+
             Assert.Equal(90.0, costs);
         }
-
-
-
     }
 }

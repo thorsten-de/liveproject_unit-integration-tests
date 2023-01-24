@@ -24,6 +24,7 @@ namespace ShoppingCartTests
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
+
             Assert.False(result);
         }
 
@@ -38,6 +39,7 @@ namespace ShoppingCartTests
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
+
             Assert.False(result);
         }
 
@@ -53,6 +55,7 @@ namespace ShoppingCartTests
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
+
             Assert.False(result);
         }
 
@@ -68,6 +71,7 @@ namespace ShoppingCartTests
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
+
             Assert.True(result);
         }
     }
