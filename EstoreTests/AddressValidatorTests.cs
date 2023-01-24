@@ -6,7 +6,7 @@ namespace EstoreTests
     public class AddressValidatorTests
     {
         [Fact]
-        public void IsValid_NullAddress_Fails()
+        public void Null_is_not_a_valid_address()
         {
             var validator = new AddressValidator();
             bool result = validator.IsValid(null);
@@ -14,9 +14,13 @@ namespace EstoreTests
         }
 
         [Fact]
-        public void IsValid_Empty_Address_Fails()
+        public void Address_without_street_is_invalid()
         {
-            var address = new Address();
+            var address = new Address
+            {
+                City = "London",
+                Country = "England"
+            };
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
@@ -24,7 +28,36 @@ namespace EstoreTests
         }
 
         [Fact]
-        public void IsValid_ProperAddress_Success()       
+        public void Address_without_city_is_invalid()
+        {
+            var address = new Address
+            {
+                Street = "Baker Street 221B",
+                Country = "England"
+            };
+            var validator = new AddressValidator();
+
+            var result = validator.IsValid(address);
+            Assert.False(result);
+        }
+
+
+        [Fact]
+        public void Address_without_country_is_invalid()
+        {
+            var address = new Address
+            {
+                City = "London",
+                Street = "Baker Street 221B",
+            };
+            var validator = new AddressValidator();
+
+            var result = validator.IsValid(address);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void A_complete_address_is_valid()       
         {
             var address = new Address
             {

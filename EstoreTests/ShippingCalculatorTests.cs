@@ -29,7 +29,7 @@ namespace EstoreTests
             };
 
         [Fact]
-        public void CalculateShippingCost_EmptyCart()
+        public void An_empty_cart_has_no_costs()
         {
             var cart = new Cart
             {
@@ -42,7 +42,7 @@ namespace EstoreTests
         }
 
         [Fact]
-        public void CalculateShippingCost_SingleItemCart()
+        public void Ship_a_single_item_cart_to_same_city_with_standards()
         {
             var cart = new Cart
             {
@@ -62,7 +62,7 @@ namespace EstoreTests
         [InlineData(ShippingMethod.Expedited, 7.2)]
         [InlineData(ShippingMethod.Priority, 12.0)]
         [InlineData(ShippingMethod.Express, 15.0)]
-        public void CalculateShipingCosts_ToStandardCustomerInSameCity(ShippingMethod method, double expectedCosts) {            
+        public void It_applies_shipping_method_for_standard_customers(ShippingMethod method, double expectedCosts) {            
             var cart = DefaultCart();
             cart.ShippingMethod = method;
 
@@ -78,7 +78,7 @@ namespace EstoreTests
         [InlineData(ShippingMethod.Expedited, 6.0)]
         [InlineData(ShippingMethod.Priority, 6.0)]
         [InlineData(ShippingMethod.Express, 15.0)]
-        public void CalculateShipingCosts_ToPremiumCustomerInSameCity(ShippingMethod method, double expectedCosts)
+        public void Ita_applies_shipping_method_for_premium_customers(ShippingMethod method, double expectedCosts)
         {
             var cart = DefaultCart();
             cart.CustomerType = CustomerType.Premium;
@@ -92,7 +92,7 @@ namespace EstoreTests
         }
 
         [Fact]
-        public void CalculateShippingCost_ToSameCountry()
+        public void Ship_to_different_city_in_same_country()
         {
             var cart = new Cart
             {
@@ -112,7 +112,7 @@ namespace EstoreTests
         }
 
         [Fact]
-        public void CalculateShippingCost_TotherCountry()
+        public void Ship_to_another_country()
         {
             var cart = new Cart
             {
