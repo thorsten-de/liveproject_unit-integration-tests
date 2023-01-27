@@ -34,8 +34,9 @@ namespace ShoppingCartTests
                 }
             };
 
-        private ICheckOutEngine CreateEngine() => new CheckOutEngine(
-                new MockShippingCalculator(0.0),
+        private ICheckOutEngine CreateEngine(double shippingCosts = 0.00)
+            => new CheckOutEngine(
+                new MockShippingCalculator(shippingCosts),
                 _mapper);
 
 
@@ -79,7 +80,7 @@ namespace ShoppingCartTests
         [Fact]
         public void Checkout_considers_shipping_costs()
         {
-            var engine = new CheckOutEngine(new MockShippingCalculator(4.0), _mapper);
+            var engine = CreateEngine(shippingCosts: 4.0);
             var cart = DefaultCart();
 
             var result = engine.CalculateTotals(cart);
