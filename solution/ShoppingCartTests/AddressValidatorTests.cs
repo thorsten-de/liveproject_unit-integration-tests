@@ -16,11 +16,9 @@ namespace ShoppingCartTests
         [Fact]
         public void Address_without_street_is_invalid()
         {
-            var address = new Address
-            {
-                City = "London",
-                Country = "England"
-            };
+            var address = new AddressBuilder()
+                .WithoutStreet()
+                .Build();
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
@@ -31,11 +29,9 @@ namespace ShoppingCartTests
         [Fact]
         public void Address_without_city_is_invalid()
         {
-            var address = new Address
-            {
-                Street = "Baker Street 221B",
-                Country = "England"
-            };
+            var address = new AddressBuilder()
+                .WithoutCity()
+                .Build();
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
@@ -47,11 +43,9 @@ namespace ShoppingCartTests
         [Fact]
         public void Address_without_country_is_invalid()
         {
-            var address = new Address
-            {
-                City = "London",
-                Street = "Baker Street 221B",
-            };
+            var address = new AddressBuilder()
+                .WithoutCountry()
+                .Build();
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);
@@ -62,12 +56,8 @@ namespace ShoppingCartTests
         [Fact]
         public void A_complete_address_is_valid()       
         {
-            var address = new Address
-            {
-                City = "London",
-                Street = "Baker Street 221B",
-                Country = "England"
-            };
+            var address = new AddressBuilder()
+                .Build();
             var validator = new AddressValidator();
 
             var result = validator.IsValid(address);

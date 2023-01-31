@@ -23,17 +23,7 @@ namespace ShoppingCartTests
 
             public double CalculateShippingCost(Cart cart) => costs;
         }
-
-        private static Cart DefaultCart() =>
-            new Cart
-            {
-                Items = new List<Item> {
-                    new Item { Quantity = 1, Price = 100.0 },
-                    new Item { Quantity = 2, Price = 10.0},
-                    new Item { Quantity = 3, Price = 1.0 }
-                }
-            };
-
+    
         private ICheckOutEngine CreateEngine(double shippingCosts = 0.00)
             => new CheckOutEngine(
                 new MockShippingCalculator(shippingCosts),
@@ -44,7 +34,9 @@ namespace ShoppingCartTests
         public void An_empty_cart_has_no_total_and_discount()
         {
             var engine = CreateEngine();
-            var cart = new Cart { };
+            var cart = new CartBuilder()
+                .WithoutItems()
+                .Build();
 
             var result = engine.CalculateTotals(cart);
 
@@ -56,7 +48,9 @@ namespace ShoppingCartTests
         public void Standard_customers_get_no_discount()
         {
             var engine = CreateEngine();
-            var cart = DefaultCart();
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .Build();
 
             var result = engine.CalculateTotals(cart);
 
@@ -68,8 +62,10 @@ namespace ShoppingCartTests
         public void Premium_customers_get_their_discount()
         {
             var engine = CreateEngine();
-            var cart = DefaultCart();
-            cart.CustomerType = CustomerType.Premium;
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .ForPremiumCustomer()
+                .Build();
 
             var result = engine.CalculateTotals(cart);
 
@@ -81,7 +77,9 @@ namespace ShoppingCartTests
         public void Checkout_considers_shipping_costs()
         {
             var engine = CreateEngine(shippingCosts: 4.0);
-            var cart = DefaultCart();
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .Build();
 
             var result = engine.CalculateTotals(cart);
 

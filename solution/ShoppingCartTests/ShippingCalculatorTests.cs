@@ -7,36 +7,13 @@ namespace ShoppingCartTests
 {
     public class ShippingCalculatorTests
     {
-        private static Address CreateAddress(
-            string City = "Dallas",
-            string Country = "USA",
-            string Street = "At home") => new Address
-            {
-                City = City,
-                Country = Country,
-                Street = Street
-            };
-
-        public static readonly Address InSameCity = CreateAddress();
-
-        private static Cart DefaultCart() =>
-            new Cart
-            {
-                ShippingAddress = InSameCity,
-                Items = new List<Item> {
-                    new Item { Quantity = 1 },
-                    new Item { Quantity = 2 },
-                    new Item { Quantity = 3 }
-                },
-            };
-
+ 
         [Fact]
         public void An_empty_cart_has_no_costs()
         {
-            var cart = new Cart
-            {
-                ShippingAddress = InSameCity,
-            };
+            var cart = new CartBuilder()
+                .WithoutItems()
+                .Build();
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -47,11 +24,10 @@ namespace ShoppingCartTests
         [Fact]
         public void Ship_a_single_item_cart_to_same_city_with_standards()
         {
-            var cart = new Cart
-            {
-                ShippingAddress = InSameCity,
-                Items = new List<Item> { new Item { Quantity = 2 } }
-            };
+            var cart = new CartBuilder()
+                .WithItems(new List<Item> { new Item { Quantity = 2 } })
+                .Build();
+
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -65,8 +41,10 @@ namespace ShoppingCartTests
         [InlineData(ShippingMethod.Priority, 12.0)]
         [InlineData(ShippingMethod.Express, 15.0)]
         public void It_applies_shipping_method_for_standard_customers(ShippingMethod method, double expectedCosts) {
-            var cart = DefaultCart();
-            cart.ShippingMethod = method;
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .WithShippingMethod(method)
+                .Build();
             var calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -81,9 +59,12 @@ namespace ShoppingCartTests
         [InlineData(ShippingMethod.Express, 15.0)]
         public void Ita_applies_shipping_method_for_premium_customers(ShippingMethod method, double expectedCosts)
         {
-            var cart = DefaultCart();
-            cart.CustomerType = CustomerType.Premium;
-            cart.ShippingMethod = method;
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .WithShippingMethod(method)
+                .ForPremiumCustomer()
+                .Build();
+
             var calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -94,10 +75,12 @@ namespace ShoppingCartTests
         [Fact]
         public void Ship_to_different_city_in_same_country()
         {
-            var cart = DefaultCart();
-            cart.ShippingAddress = CreateAddress(
-                City: "New York",
-                Street: "Wall Street 11");
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .WithShippingAddress(new AddressBuilder()
+                    .InDifferentCity()
+                    .Build())
+                .Build();
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
@@ -108,12 +91,12 @@ namespace ShoppingCartTests
         [Fact]
         public void Ship_to_another_country()
         {
-            var cart = DefaultCart();
-            cart.ShippingAddress = CreateAddress(
-                City: "London",
-                Country: "GB",
-                Street: "Downing Street 10"
-            );
+            var cart = new CartBuilder()
+                .WithManyItems()
+                .WithShippingAddress(new AddressBuilder()
+                    .InDifferentCountry()
+                    .Build())
+                .Build();
             IShippingCalculator calculator = new ShippingCalculator();
 
             var costs = calculator.CalculateShippingCost(cart);
