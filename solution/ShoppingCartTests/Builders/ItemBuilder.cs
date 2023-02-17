@@ -1,4 +1,5 @@
-﻿using ShoppingCartService.DataAccess.Entities;
+﻿using ShoppingCartService.Controllers.Models;
+using ShoppingCartService.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,14 @@ namespace ShoppingCartTests.Builders
                 ProductName = productName,
                 Quantity = quantity
             };
+
+        public static ItemDto CreateItemDto(
+          string productId = "product-1",
+          string productName = "Superb Product",
+          double price = 1.0,
+          uint quantity = 1
+          ) =>
+          new ItemDto(productId, productName, price, quantity);
 
     }
 }
