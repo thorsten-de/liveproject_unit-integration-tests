@@ -15,24 +15,13 @@ using ShoppingCartTests.Builders;
 namespace ShoppingCartTests.DataAccess
 {
     [Collection("Dockerized MongoDB collection")]
-    public class ShoppingCartRepositoryIntegrationTests : IDisposable
+    public class ShoppingCartRepositoryIntegrationTests : IntegrationTestBase
     {
-        private IShoppingCartDatabaseSettings _databaseSettings;
         private const string Unknown_ID = "507f191e810c19729de860ea";
 
         public ShoppingCartRepositoryIntegrationTests(DockerMongoFixture dockerMongoFixture)
+            : base(dockerMongoFixture)
         {
-            _databaseSettings = dockerMongoFixture.GetDatabaseSettings();
-        }
-
-        private ShoppingCartRepository InitializeRepository(params Cart[] carts)
-        {
-            var repo = new ShoppingCartRepository(_databaseSettings);
-            foreach (var cart in carts)
-            {
-                repo.Create(cart);
-            }
-            return repo;
         }
 
         [Fact]
@@ -142,12 +131,6 @@ namespace ShoppingCartTests.DataAccess
 
             Assert.NotNull(result);
             Assert.Empty(result);
-        }
-
-        public void Dispose()
-        {
-            new MongoClient(_databaseSettings.ConnectionString)
-                .DropDatabase(_databaseSettings.DatabaseName);
         }
     }
 }
