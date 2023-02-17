@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using ShoppingCartService.Models;
 
 namespace ShoppingCartService.Controllers.Models
 {
-    public record ItemDto([Required] string ProductId, [Required] string ProductName, uint Price, uint Quantity = 1);
+    public record ItemDto([Required] string ProductId, [Required] string ProductName, double Price, uint Quantity = 1);
 
     public record CreateCartDto
     {
@@ -23,6 +24,26 @@ namespace ShoppingCartService.Controllers.Models
         public ShippingMethod ShippingMethod { get; init; }
         public Address ShippingAddress { get; init; }
         public IEnumerable<ItemDto> Items { get; init; } = Enumerable.Empty<ItemDto>();
+
+        public override int GetHashCode() =>
+            HashCode.Combine(Id,
+                CustomerId,
+                (int)CustomerType,
+                (int)ShippingMethod,
+                ShippingAddress, Items);
+
+        public virtual bool Equals(ShoppingCartDto other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Id == other.Id &&
+                CustomerId == other.CustomerId &&
+                CustomerType == other.CustomerType &&
+                ShippingMethod == other.ShippingMethod &&
+                Equals(ShippingAddress, other.ShippingAddress) &&
+                Items.SequenceEqual(other.Items);
+        }
     }
 
     public record CheckoutDto (ShoppingCartDto ShoppingCart, double ShippingCost, double CustomerDiscount, double Total);
