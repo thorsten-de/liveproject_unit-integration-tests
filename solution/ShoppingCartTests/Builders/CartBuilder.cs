@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingCartTests
+namespace ShoppingCartTests.Builders
 {
     internal class CartBuilder
     {
@@ -74,7 +74,7 @@ namespace ShoppingCartTests
         {
             return new Cart
             {
-                CustomerId= _customerId,
+                CustomerId = _customerId,
                 ShippingAddress = _shippingAddress,
                 ShippingMethod = _shippingMethod,
                 CustomerType = _customerType,
@@ -82,6 +82,6 @@ namespace ShoppingCartTests
             };
         }
 
-       
+
     }
 }

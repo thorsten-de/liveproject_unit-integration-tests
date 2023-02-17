@@ -2,6 +2,7 @@
 using ShoppingCartService.Config;
 using ShoppingCartService.DataAccess;
 using ShoppingCartService.DataAccess.Entities;
+using ShoppingCartTests.Fixtures;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,20 +10,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using ShoppingCartTests.Builders;
 
-namespace ShoppingCartTests
+namespace ShoppingCartTests.DataAccess
 {
     [Collection("Dockerized MongoDB collection")]
     public class ShoppingCartRepositoryIntegrationTests : IDisposable
     {
         private IShoppingCartDatabaseSettings _databaseSettings;
-        private IMongoCollection<Cart> _cartsCollection;
         private const string Unknown_ID = "507f191e810c19729de860ea";
 
         public ShoppingCartRepositoryIntegrationTests(DockerMongoFixture dockerMongoFixture)
         {
             _databaseSettings = dockerMongoFixture.GetDatabaseSettings();
-            SetupCartsCollection();
         }
 
         private ShoppingCartRepository InitializeRepository(params Cart[] carts)
@@ -33,13 +33,6 @@ namespace ShoppingCartTests
                 repo.Create(cart);
             }
             return repo;
-        }
-
-        private void SetupCartsCollection()
-        {
-            var client = new MongoClient(_databaseSettings.ConnectionString);
-            var database = client.GetDatabase(_databaseSettings.DatabaseName);
-            _cartsCollection = database.GetCollection<Cart>(_databaseSettings.CollectionName);
         }
 
         [Fact]

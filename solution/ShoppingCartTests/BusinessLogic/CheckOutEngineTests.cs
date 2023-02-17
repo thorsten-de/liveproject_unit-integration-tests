@@ -5,7 +5,10 @@ using ShoppingCartService.DataAccess.Entities;
 using ShoppingCartService.Mapping;
 using ShoppingCartService.Models;
 
-namespace ShoppingCartTests
+using ShoppingCartTests.Builders;
+
+
+namespace ShoppingCartTests.BusinessLogic
 {
     public class CheckOutEngineTests
     {
@@ -23,7 +26,7 @@ namespace ShoppingCartTests
 
             public double CalculateShippingCost(Cart cart) => costs;
         }
-    
+
         private ICheckOutEngine CreateEngine(double shippingCosts = 0.00)
             => new CheckOutEngine(
                 new MockShippingCalculator(shippingCosts),

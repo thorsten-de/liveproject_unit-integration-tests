@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShoppingCartTests
+namespace ShoppingCartTests.Fixtures
 {
     public class DockerMongoFixture : IDisposable
     {
@@ -87,5 +87,5 @@ namespace ShoppingCartTests
 
     [CollectionDefinition("Dockerized MongoDB collection")]
     public class DockerMongoCollection : ICollectionFixture<DockerMongoFixture>
-    {    }
+    { }
 }
