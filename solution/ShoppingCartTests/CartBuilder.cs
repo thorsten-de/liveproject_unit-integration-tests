@@ -10,10 +10,24 @@ namespace ShoppingCartTests
 {
     internal class CartBuilder
     {
-        private Address? _shippingAddress;
-        private List<Item>? _items = new();
+        private Address _shippingAddress = new AddressBuilder().Build();
+        private List<Item> _items = new();
         private CustomerType _customerType = CustomerType.Standard;
         private ShippingMethod _shippingMethod = ShippingMethod.Standard;
+        private string _id = "cart-1";
+        private string _customerId = "customer-1";
+
+        public CartBuilder WithId(string id)
+        {
+            _id = id;
+            return this;
+        }
+
+        public CartBuilder WithCustomerId(string customerId)
+        {
+            _customerId = customerId;
+            return this;
+        }
 
         public CartBuilder WithShippingAddress(Address address)
         {
@@ -60,7 +74,8 @@ namespace ShoppingCartTests
         {
             return new Cart
             {
-                ShippingAddress = _shippingAddress ?? new AddressBuilder().Build(),
+                CustomerId= _customerId,
+                ShippingAddress = _shippingAddress,
                 ShippingMethod = _shippingMethod,
                 CustomerType = _customerType,
                 Items = _items
