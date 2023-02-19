@@ -97,6 +97,7 @@ namespace ShoppingCartTests.Controllers
 
             CheckoutDto? actual = sut.CalculateTotals(cart.Id).Value;
             Assert.NotNull(actual);
+            Assert.NotEqual(0.0, actual.Total);
         }
 
         [Fact]
@@ -110,19 +111,13 @@ namespace ShoppingCartTests.Controllers
             var sut = CreateShoppingCartController(repository);
 
             var result = sut.Create(createCartDto);
+
+
             Assert.IsType<CreatedAtRouteResult>(result.Result);
-            var dbCarts = repository.FindAll();
-            Assert.Single(dbCarts);
+            var cartId = ((CreatedAtRouteResult)result.Result).RouteValues["id"].ToString();
 
-
-            /*
-            var actual = result.Value;
-            Assert.NotNull(actual);
-            Assert.Equal("customer-1", actual.CustomerId);
-            Assert.Equal(CustomerType.Standard, actual.CustomerType);
-            Assert.Equal(ShippingMethod.Standard, actual.ShippingMethod);
-            Assert.Equal(address, actual.ShippingAddress);
-            Assert.True(items.SequenceEqual(actual.Items));*/
+            var value = repository.FindById(cartId);
+            Assert.NotNull(value);
         }
 
         [Fact]
@@ -166,20 +161,15 @@ namespace ShoppingCartTests.Controllers
         [Fact]
         public void Delete_ValidData_RemoveShoppingCartToDB()
         {
-            var createCartDto = BuildCreateCartDto(
-                new[] { CreateItemDto() },
-                new AddressBuilder().Build());
+            var cart = CreateTestCart();
+            var repository = InitializeRepository(cart);
             
-            var repository = InitializeRepository();
             var sut = CreateShoppingCartController(repository);
+            
+            var _ = sut.DeleteCart(cart.Id);
 
-            sut.Create(createCartDto);            
-            string id = repository.FindAll().Single().Id;
-            var actual = sut.DeleteCart(id);
-
-            Assert.IsType<NoContentResult>(actual);
-            var dbCarts = repository.FindAll();
-            Assert.Empty(dbCarts);
+            var value = repository.FindById(cart.Id);
+            Assert.Null(value);
         }
 
         private ShoppingCartController CreateShoppingCartController(ShoppingCartRepository repository)

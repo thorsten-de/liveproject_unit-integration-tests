@@ -65,14 +65,13 @@ namespace ShoppingCartTests.DataAccess
             Cart result = sut.FindById(validId);
             Assert.NotNull(result);
             Assert.Equal(validId, result.Id);
+            Assert.Equal(carts[1], result);
         }
 
         [Fact]
         public void GetById_CartNotFound_ReturnNull()
         {
-            ShoppingCartRepository sut = InitializeRepository(new[] {
-                new CartBuilder().Build(),
-            });
+            ShoppingCartRepository sut = InitializeRepository(new CartBuilder().Build());
 
             Cart result = sut.FindById(Unknown_ID);
 
@@ -93,11 +92,10 @@ namespace ShoppingCartTests.DataAccess
             var cart = new CartBuilder()
                 .WithCustomerId("customer-01")
                 .Build();
-            ShoppingCartRepository sut = InitializeRepository(new[] { cart });
+            ShoppingCartRepository sut = InitializeRepository(cart);
 
-            var foundCart = sut.FindById(cart.Id);
-            foundCart.CustomerId = "updated-customer";
-            sut.Update(foundCart.Id, foundCart);
+            cart.CustomerId = "updated-customer";
+            sut.Update(cart.Id, cart);
 
             Cart result = sut.FindById(cart.Id);
 
@@ -110,10 +108,9 @@ namespace ShoppingCartTests.DataAccess
         public void Remove_CartFound_RemoveFromDb()
         {
             var cart = new CartBuilder().Build();
-            ShoppingCartRepository sut = InitializeRepository(new[] { cart });
+            ShoppingCartRepository sut = InitializeRepository(cart);
 
-            var foundCart = sut.FindById(cart.Id);
-            sut.Remove(foundCart);
+            sut.Remove(cart);
             var result = sut.FindAll();
 
             Assert.NotNull(result);
@@ -124,7 +121,7 @@ namespace ShoppingCartTests.DataAccess
         public void RemoveById_CartFound_RemoveFromDb()
         {
             var cart = new CartBuilder().Build();
-            ShoppingCartRepository sut = InitializeRepository(new[] { cart });
+            ShoppingCartRepository sut = InitializeRepository(cart);
 
             sut.Remove(cart.Id);
             var result = sut.FindAll();
