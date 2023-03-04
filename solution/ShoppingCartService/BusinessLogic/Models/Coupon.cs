@@ -2,9 +2,14 @@
 using ShoppingCartService.BusinessLogic.Exceptions;
 using ShoppingCartService.Controllers.Models;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ShoppingCartService.BusinessLogic.Models
 {
+    /// <summary>
+    /// A coupon can calculate a discount based on the Checkout data 
+    /// with several strategies
+    /// </summary>
     public abstract class Coupon
     {
         public static Coupon WithAmount(double amount) =>
@@ -13,6 +18,9 @@ namespace ShoppingCartService.BusinessLogic.Models
         public static Coupon WithPercentage(double value)
             => new PercentageCoupon(value);
 
+        public static Coupon WithFreeShipping()
+            => new FreeShippingCoupon();
+
         /// <summary>
         /// Validates given data for the concrete coupon type and calculates
         /// the discount
@@ -20,6 +28,8 @@ namespace ShoppingCartService.BusinessLogic.Models
         /// <param name="checkoutDto">checkout data</param>
         /// <returns>calculated discount</returns>
         public abstract double CalculateDiscount(CheckoutDto checkoutDto);
+
+        #region Coupon implementations
 
         /// <summary>
         /// Implementation for fixed amount dicounts
@@ -68,6 +78,19 @@ namespace ShoppingCartService.BusinessLogic.Models
                 return checkoutDto.Total * _value / 100.0;
             }
         }
+
+        /// <summary>
+        /// Implementation for free shipping coupons
+        /// </summary>
+        private class FreeShippingCoupon : Coupon
+        {
+            public override double CalculateDiscount(CheckoutDto checkoutDto)
+            {
+                return checkoutDto.ShippingCost;
+            }
+        }
+
+        #endregion
     }
 
 }

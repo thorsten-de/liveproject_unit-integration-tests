@@ -4,6 +4,14 @@
         <name>ShoppingCartService</name>
     </assembly>
     <members>
+        <member name="M:ShoppingCartService.BusinessLogic.Models.Coupon.CalculateDiscount(ShoppingCartService.Controllers.Models.CheckoutDto)">
+            <summary>
+            Validates given data for the concrete coupon type and calculates
+            the discount
+            </summary>
+            <param name="checkoutDto">checkout data</param>
+            <returns>calculated discount</returns>
+        </member>
         <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon.AmountCoupon">
             <summary>
             Implementation for fixed amount dicounts

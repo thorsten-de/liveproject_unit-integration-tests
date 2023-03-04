@@ -115,5 +115,17 @@ namespace ShoppingCartTests.BusinessLogic
 
             Assert.Equal(5, actual);
         }
+
+        [Fact]
+        public void Free_shipping_couponts_discount_shipping_cost()
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto(shipping: 10.0);
+            CouponEngine engine = new();
+            Coupon coupon = Coupon.WithFreeShipping();
+
+            var discount = engine.CalculateDiscount(checkoutDto, coupon);
+            Assert.Equal(10.0, discount);
+        }
+
     }
 }
