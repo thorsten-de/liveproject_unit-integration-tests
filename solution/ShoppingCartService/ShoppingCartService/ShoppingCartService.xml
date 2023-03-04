@@ -4,6 +4,16 @@
         <name>ShoppingCartService</name>
     </assembly>
     <members>
+        <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon.AmountCoupon">
+            <summary>
+            Implementation for fixed amount dicounts
+            </summary>
+        </member>
+        <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon.PercentageCoupon">
+            <summary>
+            Implementation for coupons that discount relative to total costs
+            </summary>
+        </member>
         <member name="M:ShoppingCartService.Controllers.ShoppingCartController.GetAll">
             <summary>
             Get all shopping carts

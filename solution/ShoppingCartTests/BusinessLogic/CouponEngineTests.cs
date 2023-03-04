@@ -35,7 +35,7 @@ namespace ShoppingCartTests.BusinessLogic
         {
             CheckoutDto checkoutDto = CreateCheckoutDto(total: 100);
             CouponEngine engine = new CouponEngine();
-            Coupon coupon = new() { Amount = amount };
+            Coupon coupon = Coupon.WithAmount(amount);
 
             var discount = engine.CalculateDiscount(checkoutDto, coupon);
             
@@ -47,7 +47,7 @@ namespace ShoppingCartTests.BusinessLogic
         {
             CheckoutDto checkoutDto = CreateCheckoutDto(total: 10);
             CouponEngine engine = new CouponEngine();
-            Coupon coupon = new() { Amount = 100 };
+            Coupon coupon = Coupon.WithAmount(100);
 
             Assert.Throws<InvalidCouponException>(() => { 
                 var discount = engine.CalculateDiscount(checkoutDto, coupon);
@@ -59,11 +59,61 @@ namespace ShoppingCartTests.BusinessLogic
         {
             CheckoutDto checkoutDto = CreateCheckoutDto();
             CouponEngine engine = new CouponEngine();
-            Coupon coupon = new() { Amount = -10 };
+            Coupon coupon = Coupon.WithAmount(-100);
 
             Assert.Throws<InvalidCouponException>(() => {
                 var discount = engine.CalculateDiscount(checkoutDto, coupon);
             });
+        }
+
+        [Theory]
+        [InlineData(10.0)]
+        [InlineData(15.0)]
+        public void Coupons_can_be_percentage_of_total_cost(double percentage)
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto(total: 100.0);
+            CouponEngine engine = new();
+            Coupon coupon = Coupon.WithPercentage(percentage);
+
+            var discount = engine.CalculateDiscount(checkoutDto, coupon);
+            Assert.Equal(percentage, discount);
+        }
+
+        [Fact]
+        public void Coupons_cannot_discount_more_than_100_percent()
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto();
+            CouponEngine engine = new CouponEngine();
+            Coupon coupon = Coupon.WithPercentage(105);
+
+            Assert.Throws<InvalidCouponException>(() => {
+                var discount = engine.CalculateDiscount(checkoutDto, coupon);
+            });
+        }
+
+        [Fact]
+        public void Coupons_must_not_have_a_negative_percentage()
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto();
+            CouponEngine engine = new CouponEngine();
+            Coupon coupon = Coupon.WithPercentage(-10);
+
+            Assert.Throws<InvalidCouponException>(() => {
+                var discount = engine.CalculateDiscount(checkoutDto, coupon);
+            });
+        }
+
+        // Shouldn't be a problem with my implementation...
+        [Fact]
+        public void CalculateDiscount_CouponOfTypePercentageAndHigherThanAmount_DoNotThrowInvalidCouponException()
+        {
+            var target = new CouponEngine();
+
+            var actual = target.CalculateDiscount(
+                CreateCheckoutDto(total: 10),
+                Coupon.WithPercentage(50));
+
+            Assert.Equal(5, actual);
         }
     }
 }
