@@ -4,7 +4,13 @@
         <name>ShoppingCartService</name>
     </assembly>
     <members>
-        <member name="M:ShoppingCartService.BusinessLogic.Models.Coupon.CalculateDiscount(ShoppingCartService.Controllers.Models.CheckoutDto)">
+        <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon">
+            <summary>
+            A coupon can calculate a discount based on the Checkout data 
+            with several strategies
+            </summary>
+        </member>
+        <member name="M:ShoppingCartService.BusinessLogic.Models.Coupon.CalculateDiscount(ShoppingCartService.Controllers.Models.CheckoutDto,System.Nullable{System.DateTime})">
             <summary>
             Validates given data for the concrete coupon type and calculates
             the discount
@@ -20,6 +26,11 @@
         <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon.PercentageCoupon">
             <summary>
             Implementation for coupons that discount relative to total costs
+            </summary>
+        </member>
+        <member name="T:ShoppingCartService.BusinessLogic.Models.Coupon.FreeShippingCoupon">
+            <summary>
+            Implementation for free shipping coupons
             </summary>
         </member>
         <member name="M:ShoppingCartService.Controllers.ShoppingCartController.GetAll">

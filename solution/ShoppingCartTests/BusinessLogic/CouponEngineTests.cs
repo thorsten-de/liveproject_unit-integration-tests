@@ -127,5 +127,36 @@ namespace ShoppingCartTests.BusinessLogic
             Assert.Equal(10.0, discount);
         }
 
+        [Fact]
+        public void An_expired_coupon_throws_exception()
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto(total: 100);
+            CouponEngine engine = new();
+            Coupon coupon = Coupon
+                .WithAmount(10)
+                .ExpiresOn(new DateTime(2023, 1, 1));
+
+
+            Assert.Throws<CouponExdpiredException>(() =>
+            {
+                var discount = engine.CalculateDiscount(checkoutDto, coupon, 
+                    onDate: new DateTime(2023, 3, 1));
+            });
+        }
+
+        [Fact]
+        public void Coupons_are_valid_before_expiry_date()
+        {
+            CheckoutDto checkoutDto = CreateCheckoutDto(total: 100);
+            CouponEngine engine = new();
+            Coupon coupon = Coupon
+                .WithAmount(10)
+                .ExpiresOn(new DateTime(2024, 1, 1));
+
+            var discount = engine.CalculateDiscount(checkoutDto, coupon,
+                    onDate: new DateTime(2023, 3, 1));
+
+            Assert.Equal(10, discount);
+        }
     }
 }
