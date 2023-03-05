@@ -17,6 +17,7 @@ namespace ShoppingCartTests.DataAccess
     [Collection("Dockerized MongoDB collection")]
     public class ShoppingCartRepositoryIntegrationTests : IntegrationTestBase
     {
+
         private const string Unknown_ID = "507f191e810c19729de860ea";
 
         public ShoppingCartRepositoryIntegrationTests(DockerMongoFixture dockerMongoFixture)

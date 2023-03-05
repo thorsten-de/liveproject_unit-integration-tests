@@ -35,6 +35,13 @@ namespace ShoppingCartTests.Fixtures
                 DatabaseName = "ShoppingCartTestDB"
             };
 
+        public CouponDatabaseSettings GetCouponDatabaseSettings() =>
+            new CouponDatabaseSettings
+            {
+                CollectionName = "CouponTestCollection",
+                ConnectionString = ConnectionString,
+                DatabaseName = "ShoppingCartTestDB"
+            };
 
         public void Dispose()
         {

@@ -1,11 +1,13 @@
 ﻿using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using ShoppingCartService.BusinessLogic.Exceptions;
 using ShoppingCartService.Controllers.Models;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace ShoppingCartService.BusinessLogic.Models
+namespace ShoppingCartService.DataAccess.Entities
 {
     /// <summary>
     /// A coupon can calculate a discount based on the Checkout data 
@@ -13,6 +15,14 @@ namespace ShoppingCartService.BusinessLogic.Models
     /// </summary>
     public abstract class Coupon
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        [BsonElement]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ExpiresOn { get; set; }
+
         public static Coupon WithAmount(double amount) =>
             new AmountCoupon(amount);
 
@@ -22,13 +32,11 @@ namespace ShoppingCartService.BusinessLogic.Models
         public static Coupon WithFreeShipping()
             => new FreeShippingCoupon();
 
-        public Coupon ExpiresOn(DateTime expiresOn)
+        public Coupon Expire(DateTime expiresOn)
         {
-            _expiresOn = expiresOn;
+            ExpiresOn = expiresOn;
             return this;
         }
-
-        private DateTime? _expiresOn;
 
         /// <summary>
         /// Validates given data for the concrete coupon type and calculates
@@ -39,8 +47,8 @@ namespace ShoppingCartService.BusinessLogic.Models
         public double CalculateDiscount(CheckoutDto checkoutDto, DateTime? onDate = null)
         {
             onDate ??= DateTime.Now;
-            if (_expiresOn < onDate)
-                throw new CouponExdpiredException($"The coupon has expired on {_expiresOn}.");
+            if (ExpiresOn < onDate)
+                throw new CouponExdpiredException($"The coupon has expired on {ExpiresOn}.");
 
             Validate(checkoutDto);
             return Calculate(checkoutDto);
@@ -106,7 +114,7 @@ namespace ShoppingCartService.BusinessLogic.Models
         /// </summary>
         private class FreeShippingCoupon : Coupon
         {
-            protected override double Calculate(CheckoutDto checkoutDto) 
+            protected override double Calculate(CheckoutDto checkoutDto)
                 => checkoutDto.ShippingCost;
         }
 

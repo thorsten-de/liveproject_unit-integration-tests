@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="BusinessLogic\Models\" />
     <Folder Include="Mapping\" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿using ShoppingCartService.BusinessLogic.Exceptions;
-using ShoppingCartService.BusinessLogic.Models;
 using ShoppingCartService.Controllers.Models;
+using ShoppingCartService.DataAccess.Entities;
 using System;
 
 namespace ShoppingCartService.BusinessLogic

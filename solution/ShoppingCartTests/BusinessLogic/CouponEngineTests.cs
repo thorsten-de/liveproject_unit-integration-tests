@@ -1,7 +1,7 @@
 ﻿using ShoppingCartService.BusinessLogic;
 using ShoppingCartService.BusinessLogic.Exceptions;
-using ShoppingCartService.BusinessLogic.Models;
 using ShoppingCartService.Controllers.Models;
+using ShoppingCartService.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,7 +134,7 @@ namespace ShoppingCartTests.BusinessLogic
             CouponEngine engine = new();
             Coupon coupon = Coupon
                 .WithAmount(10)
-                .ExpiresOn(new DateTime(2023, 1, 1));
+                .Expire(new DateTime(2023, 1, 1));
 
 
             Assert.Throws<CouponExdpiredException>(() =>
@@ -151,7 +151,7 @@ namespace ShoppingCartTests.BusinessLogic
             CouponEngine engine = new();
             Coupon coupon = Coupon
                 .WithAmount(10)
-                .ExpiresOn(new DateTime(2024, 1, 1));
+                .Expire(new DateTime(2024, 1, 1));
 
             var discount = engine.CalculateDiscount(checkoutDto, coupon,
                     onDate: new DateTime(2023, 3, 1));
