@@ -27,5 +27,14 @@ namespace ShoppingCartService.Controllers
             var result = _mapper.Map<CouponDto>(coupon);
             return CreatedAtRoute("GetCoupon", new { id = result.Id }, result);
         }
+
+        public ActionResult<CouponDto> FindById(string id)
+        {
+            var coupon = _couponRepository.FindById(id);
+            if (coupon is null)
+                return NotFound();
+
+            return _mapper.Map<CouponDto>(coupon);
+        }
     }
 }

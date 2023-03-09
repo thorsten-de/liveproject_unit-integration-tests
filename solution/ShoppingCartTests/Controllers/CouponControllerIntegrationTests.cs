@@ -62,6 +62,30 @@ namespace ShoppingCartTests.Controllers
             });
         }
 
+        [Fact]
+        public void FindById_returns_a_known_coupon()
+        {
+            var coupon = _repo.Create(Coupon.WithFreeShipping());
+            var sut = new CouponController(_repo, _mapper);
+
+            var result = sut.FindById(coupon.Id).Value;
+
+            Assert.NotNull(result);
+            Assert.Equal(coupon.Id, result.Id);
+            Assert.Equal(coupon.Type, result.Type);
+        }
+
+        [Fact]
+        public void FindById_on_uknowwn_id_returns_not_found()
+        {
+            var sut = new CouponController(_repo, _mapper);
+
+            var result = sut.FindById(UnknownID).Result;
+
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+
 
 
 
