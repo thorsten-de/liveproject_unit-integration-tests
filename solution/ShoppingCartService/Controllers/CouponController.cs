@@ -26,6 +26,7 @@ namespace ShoppingCartService.Controllers
             return CreatedAtRoute("GetCoupon", new { id = result.Id }, result);
         }
 
+        [HttpGet(Name ="GetCoupon")]
         public ActionResult<CouponDto> FindById(string id)
         {
             var coupon = _couponManager.FindById(id);

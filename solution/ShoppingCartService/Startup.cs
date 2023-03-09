@@ -29,6 +29,8 @@ namespace ShoppingCartService
         {
             services.Configure<ShoppingCartDatabaseSettings>(
                 Configuration.GetSection(nameof(ShoppingCartDatabaseSettings)));
+            services.Configure<CouponDatabaseSettings>(
+                Configuration.GetSection(nameof(CouponDatabaseSettings)));
 
             services.AddSingleton<IShoppingCartDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<ShoppingCartDatabaseSettings>>().Value);
@@ -38,6 +40,14 @@ namespace ShoppingCartService
             services.AddSingleton<IShippingCalculator, ShippingCalculator>();
             services.AddSingleton<ICheckOutEngine, CheckOutEngine>();
             services.AddSingleton<ShoppingCartManager>();
+
+            services.AddSingleton<CouponDatabaseSettings>(sp =>
+           sp.GetRequiredService<IOptions<CouponDatabaseSettings>>().Value);
+
+
+            services.AddScoped<ICouponRepository, CouponRepository>();
+            services.AddScoped<CouponManager>();
+            services.AddScoped<CouponEngine>();
 
             services.AddControllers().AddJsonOptions(opts =>
             {
