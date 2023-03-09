@@ -19,6 +19,7 @@ namespace ShoppingCartService.Controllers
             _couponRepository = couponRepository;
         }
 
+        [HttpPost]
         public IActionResult Create([FromBody] CreateCouponDto createCoupon)
         {
             var coupon = _mapper.Map<Coupon>(createCoupon);
@@ -37,6 +38,7 @@ namespace ShoppingCartService.Controllers
             return _mapper.Map<CouponDto>(coupon);
         }
 
+        [HttpDelete]
         public IActionResult Delete(string id)
         {
             _couponRepository.Remove(id);
