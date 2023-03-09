@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingCartService.Controllers.Models;
 using ShoppingCartService.DataAccess;
 using ShoppingCartService.DataAccess.Entities;
+using ShoppingCartService.BusinessLogic;
 
 namespace ShoppingCartService.Controllers
 {
@@ -10,38 +11,34 @@ namespace ShoppingCartService.Controllers
     [ApiController]
     public class CouponController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private  readonly CouponRepository _couponRepository;
+        private readonly CouponManager _couponManager;
 
-        public CouponController(CouponRepository couponRepository, IMapper mapper)
+        public CouponController(CouponManager couponManager)
         {
-            _mapper = mapper;
-            _couponRepository = couponRepository;
+            _couponManager = couponManager;
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreateCouponDto createCoupon)
         {
-            var coupon = _mapper.Map<Coupon>(createCoupon);
-            _couponRepository.Create(coupon);
+            CouponDto result = _couponManager.Create(createCoupon);
 
-            var result = _mapper.Map<CouponDto>(coupon);
             return CreatedAtRoute("GetCoupon", new { id = result.Id }, result);
         }
 
         public ActionResult<CouponDto> FindById(string id)
         {
-            var coupon = _couponRepository.FindById(id);
+            var coupon = _couponManager.FindById(id);
             if (coupon is null)
                 return NotFound();
 
-            return _mapper.Map<CouponDto>(coupon);
+            return coupon;
         }
 
         [HttpDelete]
         public IActionResult Delete(string id)
         {
-            _couponRepository.Remove(id);
+            _couponManager.DeleteById(id);
             return NoContent();
         }
     }

@@ -5,7 +5,7 @@ using System;
 
 namespace ShoppingCartService.DataAccess
 {
-    public class CouponRepository
+    public class CouponRepository : ICouponRepository
     {
         private readonly IMongoCollection<Coupon> _coupons;
 
