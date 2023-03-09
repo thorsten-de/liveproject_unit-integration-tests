@@ -47,6 +47,8 @@ namespace ShoppingCartTests.Controllers
             Assert.NotNull(value);
             Assert.Equal(type, value.Type);
             Assert.Equal(expiresOnDate, value.ExpiresOn);
+
+            Assert.NotNull(_repo.FindById(value.Id));
         }
 
         [Fact]
@@ -85,9 +87,18 @@ namespace ShoppingCartTests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
+        [Fact]
+        public void Delete_known_coupon_from_DB()
+        {
+            var coupon = _repo.Create(Coupon.WithFreeShipping());
+            var sut = new CouponController(_repo, _mapper);
 
-
-
+            var result = sut.Delete(coupon.Id);
+            
+            Assert.IsType<NoContentResult>(result);
+            var value = _repo.FindById(coupon.Id);
+            Assert.Null(value);
+        }
 
         public void Dispose()
         {

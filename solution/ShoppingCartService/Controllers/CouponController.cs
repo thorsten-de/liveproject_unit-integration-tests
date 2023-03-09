@@ -36,5 +36,11 @@ namespace ShoppingCartService.Controllers
 
             return _mapper.Map<CouponDto>(coupon);
         }
+
+        public IActionResult Delete(string id)
+        {
+            _couponRepository.Remove(id);
+            return NoContent();
+        }
     }
 }
