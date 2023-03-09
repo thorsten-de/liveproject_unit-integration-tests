@@ -6,6 +6,9 @@ using ShoppingCartService.BusinessLogic.Exceptions;
 using ShoppingCartService.Controllers.Models;
 using System;
 using System.Runtime.CompilerServices;
+using MongoDB.Driver.Core.Events;
+using System.Collections.Specialized;
+using System.Collections.Generic;
 
 namespace ShoppingCartService.DataAccess.Entities
 {
@@ -21,7 +24,7 @@ namespace ShoppingCartService.DataAccess.Entities
 
         [BsonElement]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime? ExpiresOn { get; set; }
+        public DateTime? ExpiresOn { get; private set; }
 
         public static Coupon WithAmount(double amount) =>
             new AmountCoupon(amount);
@@ -37,6 +40,10 @@ namespace ShoppingCartService.DataAccess.Entities
             ExpiresOn = expiresOn;
             return this;
         }
+
+        public const string AmountCouponType = nameof(AmountCoupon);
+        public const string PercentCouponType = nameof(PercentageCoupon);
+        public const string FreeShippingCouponType = nameof(FreeShippingCoupon);
 
         /// <summary>
         /// Validates given data for the concrete coupon type and calculates
@@ -57,6 +64,23 @@ namespace ShoppingCartService.DataAccess.Entities
         protected virtual void Validate(CheckoutDto checkoutDto) { }
 
         protected abstract double Calculate(CheckoutDto checkoutDto);
+
+        private static readonly Dictionary<string, Func<CreateCouponDto, Coupon>> _couponCreators = new()
+        {
+            [AmountCouponType] = dto => WithAmount(dto.Amount),
+            [PercentCouponType] = dto => WithPercentage(dto.Amount),
+            [FreeShippingCouponType] = dto => WithFreeShipping()
+        };
+
+        public static Coupon FromDto(CreateCouponDto createCoupon)
+        {
+            if (!_couponCreators.TryGetValue(createCoupon.Type, out var couponCreator))
+                throw new CouponTypeUnknownException("This coupon type is unknown");
+
+            return couponCreator(createCoupon);
+        }
+
+        public string Type => GetType().Name;
 
         #region Coupon implementations
 

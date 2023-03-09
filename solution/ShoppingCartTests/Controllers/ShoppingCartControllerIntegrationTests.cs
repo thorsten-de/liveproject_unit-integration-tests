@@ -26,16 +26,11 @@ namespace ShoppingCartTests.Controllers
     [Collection("Dockerized MongoDB collection")]
     public class ShoppingCartControllerIntegrationTests : IntegrationTestBase
     {
-        private IMapper _mapper;
-        private const string UnknownID = "123456789012345678901234";
 
         public ShoppingCartControllerIntegrationTests(DockerMongoFixture fixture) 
             : base(fixture)
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()))
-                .CreateMapper();
         }
-
      
         [Fact]
         public void GetAll_HasOneCart_returnAllShoppingCartsInformation()
@@ -49,8 +44,6 @@ namespace ShoppingCartTests.Controllers
 
             Assert.Equal(expected, result.Single());
         }
-
-      
 
         [Fact]
         public void FindById_HashOneCartWithSameId_returnAllShoppingCartsInformation()

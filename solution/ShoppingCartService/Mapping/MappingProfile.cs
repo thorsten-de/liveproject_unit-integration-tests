@@ -20,6 +20,9 @@ namespace ShoppingCartService.Mapping
 
             CreateMap<Item, ItemDto>();
             CreateMap<Cart, ShoppingCartDto>();
+            CreateMap<Coupon, CouponDto>();
+            CreateMap<CreateCouponDto, Coupon>()
+                .ConstructUsing(input => Coupon.FromDto(input));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ShoppingCartService.Config;
+﻿using MongoDB.Driver;
+using ShoppingCartService.Config;
 using ShoppingCartService.DataAccess;
 using ShoppingCartService.DataAccess.Entities;
 using ShoppingCartTests.Fixtures;
@@ -14,8 +15,6 @@ namespace ShoppingCartTests.DataAccess
     [Collection("Dockerized MongoDB collection")]
     public class CouponRepositoryIntegrationTests : IntegrationTestBase
     {
-        private const string Unknown_ID = "507f191e810c19729de860ea";
-        
         protected CouponDatabaseSettings _dbSettings;
 
         public CouponRepositoryIntegrationTests(DockerMongoFixture fixture)
@@ -41,7 +40,7 @@ namespace ShoppingCartTests.DataAccess
         {
             CouponRepository target = new CouponRepository(_dbSettings);
 
-            var result = target.FindById(Unknown_ID);
+            var result = target.FindById(UnknownID);
 
             Assert.Null(result);
         }
@@ -49,7 +48,7 @@ namespace ShoppingCartTests.DataAccess
         [Fact]
         public void FindById_returns_coupon_if_exists()
         {
-        
+
             Coupon coupon = Coupon.WithPercentage(10).Expire(new DateTime(2023, 1, 1));
             CouponRepository target = new CouponRepository(_dbSettings);
             coupon = target.Create(coupon);
@@ -62,7 +61,8 @@ namespace ShoppingCartTests.DataAccess
         }
 
         [Fact]
-        public void RemoveById_removes_existing_coupon_from_db() { 
+        public void RemoveById_removes_existing_coupon_from_db()
+        {
 
             Coupon coupon = Coupon.WithFreeShipping();
             CouponRepository target = new CouponRepository(_dbSettings);
@@ -84,6 +84,12 @@ namespace ShoppingCartTests.DataAccess
             target.Remove(coupon);
 
             Assert.Null(target.FindById(coupon.Id));
+        }
+
+        public void Dispose()
+        {
+            new MongoClient(_dbSettings.ConnectionString)
+                .DropDatabase(_dbSettings.DatabaseName);
         }
     }
 }
